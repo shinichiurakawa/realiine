@@ -27,4 +27,7 @@ repositories {
 dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	compile('org.springframework:spring-jdbc')
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
+	runtime('org.postgresql:postgresql')
 }
