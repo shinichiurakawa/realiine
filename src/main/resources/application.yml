@@ -1,0 +1,3 @@
+connectioncert:
+ id: "application_id"
+ key: "application_key"

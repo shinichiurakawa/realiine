@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.co.realiine.config.ConnectionCert;
 import jp.co.realiine.dao.MyProfileDao;
 import jp.co.realiine.dao.SearchPersonDao;
+import jp.co.realiine.dto.IineDto;
 import jp.co.realiine.dto.PersonDto;
+import jp.co.realiine.dto.SearchResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +42,13 @@ public class RealIineController {
         try {
             logger.info("[--] RealController.searchPerson = " + personDto.createLogString());
             List<PersonDto> personList = searchPersonDao.searchPerson(personDto);
-            response_json = mapper.writeValueAsString(personList);
+            SearchResponseDto res = new SearchResponseDto();
+            res.setItem(personList);
+            response_json = mapper.writeValueAsString(res);
         } catch (Exception e) {
             response_json = "Error : searchPerson, e = " + e.getMessage();
         }
-        logger.info("[OUT] RealIineController.searchPerson()");
+        logger.info("[OUT] RealIineController.searchPerson() return:" + response_json);
         return response_json;
     }
 
@@ -59,6 +63,42 @@ public class RealIineController {
         try {
             logger.info("[--] RealController.searchPerson = " + personDto.createLogString());
             myProfileDao.setMyProfile(personDto);
+            response_json = "OK";
+        } catch (Exception e) {
+            response_json = "Error : searchPerson, e = " + e.getMessage();
+        }
+        logger.info("[OUT] RealIineController.setMyProfile()");
+        return response_json;
+    }
+
+    @PostMapping("/actionIine")
+    public String actionIine(@RequestBody IineDto iineDto) {
+        logger.info("[IN] RealIineController.actionIine()");
+        ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        String response_json = "";
+        if (!connectionCert.check(iineDto.getAppId(),iineDto.getAppKey())) {
+            return "unauthorized connection detected.";
+        }
+        try {
+            myProfileDao.actionIine(iineDto);
+            response_json = "OK";
+        } catch (Exception e) {
+            response_json = "Error : searchPerson, e = " + e.getMessage();
+        }
+        logger.info("[OUT] RealIineController.setMyProfile()");
+        return response_json;
+    }
+
+    @PostMapping("/fashionIine")
+    public String fashionIine(@RequestBody IineDto iineDto) {
+        logger.info("[IN] RealIineController.actionIine()");
+        ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        String response_json = "";
+        if (!connectionCert.check(iineDto.getAppId(),iineDto.getAppKey())) {
+            return "unauthorized connection detected.";
+        }
+        try {
+            myProfileDao.fasionIine(iineDto);
             response_json = "OK";
         } catch (Exception e) {
             response_json = "Error : searchPerson, e = " + e.getMessage();

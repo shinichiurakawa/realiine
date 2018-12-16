@@ -1,5 +1,6 @@
 package jp.co.realiine.dao;
 
+import jp.co.realiine.dto.IineDto;
 import jp.co.realiine.dto.PersonDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,16 @@ public class MyProfileDaoImpl implements MyProfileDao {
         return sql;
     }
 
+    private String getActionIineSql() {
+        String sql = "SELECT action_iine  FROM realiine WHERE id = :user_id ";
+        return sql;
+    }
+
+    private String getFashionIineSql() {
+        String sql = "SELECT fashion_iine  FROM realiine WHERE id = :user_id ";
+        return sql;
+    }
+
     private String setProfileSql() {
         String sql = "UPDATE realiine SET " +
                 " action_iine = 0, " +
@@ -41,13 +52,20 @@ public class MyProfileDaoImpl implements MyProfileDao {
                 " latitude = :my_latitude, " +
                 " longitude = :my_longitude, " +
                 " WHERE id = :my_id ";
-        /*
-        itemList.add("actionIine:" + String.valueOf(actionIine));
-        itemList.add("fashionIine:" + String.valueOf(fashionIine));
-        //itemList.add("imageUrl:" + imageUrl);
-        itemList.add("latitude:" + String.valueOf(latitude));
-        itemList.add("longitude:" + String.valueOf(longitude));
-         */
+        return sql;
+    }
+
+    private String actionIineSql() {
+        String sql = "UPDATE realiine SET " +
+                " action_iine = action_iine + 1 " +
+                " WHERE id = :user_id ";
+        return sql;
+    }
+
+    private String fashionIineSql() {
+        String sql = "UPDATE realiine SET " +
+                " fashion_iine = fashion_iine + 1 " +
+                " WHERE id = :user_id ";
         return sql;
     }
 
@@ -108,6 +126,44 @@ public class MyProfileDaoImpl implements MyProfileDao {
             return;
         }
         logger.error("[OUT] MyProfileDao.setMyProfile");
+        return;
+    }
+
+    public void actionIine(IineDto iineDto) {
+        logger.info("[IN] MyProfileDao.actionIine");
+        List<PersonDto> personDtoList;
+        try {
+            String sql = actionIineSql();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters
+                    .addValue("user_id",iineDto.getId())
+            ;
+            jdbcTemplate.update(sql,parameters);
+        } catch(Exception e) {
+            logger.error("[Exception] MyProfileDao.actionIine");
+            // throws e;
+            return;
+        }
+        logger.info("[OUT] MyProfileDao.actionIine");
+        return;
+    }
+
+    public void fasionIine(IineDto iineDto) {
+        logger.info("[IN] MyProfileDao.fashionIine");
+        List<PersonDto> personDtoList;
+        try {
+            String sql = fashionIineSql();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters
+                    .addValue("user_id",iineDto.getId())
+            ;
+            jdbcTemplate.update(sql,parameters);
+        } catch(Exception e) {
+            logger.error("[Exception] MyProfileDao.fashionIine");
+            // throws e;
+            return;
+        }
+        logger.info("[OUT] MyProfileDao.fashionIine");
         return;
     }
 }

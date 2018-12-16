@@ -30,7 +30,8 @@ public class SearchPersonDaoImpl implements SearchPersonDao {
     }
 
     private String searchCondition() {
-        String sql = " WHERE id != :my_id";
+        //String sql = " WHERE id != :my_id";
+        String sql = "";
         return sql;
     }
 
@@ -40,6 +41,8 @@ public class SearchPersonDaoImpl implements SearchPersonDao {
         for (Map<String, Object> r : results) {
             PersonDto person = new PersonDto();
 
+            person.setAppId("appId");
+            person.setAppKey("appKey");
             person.setId((Integer)r.get("id"));
             person.setActionIine((Integer)r.get("action_iine"));
             person.setFashionIine((Integer)r.get("fashion_iine"));
